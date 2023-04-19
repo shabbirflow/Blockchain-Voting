@@ -12,15 +12,15 @@ async function main() {
 
   const lockedAmount = hre.ethers.utils.parseEther("0.001");
 
-  const Vote = await hre.ethers.getContractFactory("Vote");
-  const vote = await Vote.deploy();
+  const Create = await hre.ethers.getContractFactory("Create");
+  const create = await Create.deploy();
 
-  await vote.deployed();
+  await create.deployed();
 
   console.log(
-    `Vote with ${ethers.utils.formatEther(
+    `Create with ${ethers.utils.formatEther(
       lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${vote.address} hehehehehe!!! workiiin`
+    )}ETH and unlock timestamp ${unlockTime} deployed to ${create.address} chutya ayush`
   );
 }
 
@@ -30,3 +30,5 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+//npx hardhat run scripts/deploy.js --network localhost
