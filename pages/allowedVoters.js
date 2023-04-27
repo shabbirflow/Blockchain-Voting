@@ -2,13 +2,15 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
+import { Web3Button } from "@web3modal/react";
+
 //---------------INTERNAL IMPORTS--------------
 import { VotingContext } from "../store/Voter";
-import Button from "../components/Button/Button";
 import Input from "../components/Input/Input";
 import myimage from "../public/images/64.png";
 // import images from "../public/images";
 import Style from "../styles/allowedVoters.module.css";
+import { votingAddress, votingAddressAbi } from "../store/constants";
 
 const allowedVoters = () => {
   const [fileUrl, setFileURL] = useState("");
@@ -19,8 +21,8 @@ const allowedVoters = () => {
     position: "",
   });
   const router = useRouter();
-  const { uploadToIPFS } = useContext(VotingContext);
-
+  const { uploadToIPFS, createVoter } =
+    useContext(VotingContext);
   //-----------------VOTERS IMAGE DROP------------------------------------------
   const onDrop = useCallback(async (acceptedFile) => {
     setLoading(true);
@@ -33,7 +35,9 @@ const allowedVoters = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/*", // /* to accept all images
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+    }, // /* to accept all images
     maxSize: 5000000, //5mb
   });
 
@@ -42,7 +46,12 @@ const allowedVoters = () => {
       <div>
         {fileUrl && (
           <div className={Style.voterInfo}>
-            {loading ? <div>Image is loading</div> : (<img src={fileUrl} alt="voter image" />)}
+            <img
+              crossOrigin="anonymous"
+              src={fileUrl}
+              alt="voter image"
+              style={{ maxHeight: "50rem", maxWidth: "50rem" }}
+            />
             <div className={Style.voterInfoPara}>
               <p>
                 Name: <span>{formInput.name}</span>
@@ -95,7 +104,7 @@ const allowedVoters = () => {
               </div>
             </div>
           </div>
-          <div className={Style.inputContainer}>
+          <form className={Style.inputContainer}>
             <Input
               title="Name"
               inputType="text"
@@ -103,6 +112,7 @@ const allowedVoters = () => {
               handleChange={(e) => {
                 setFormInput({ ...formInput, name: e.target.value });
               }}
+              required={true}
             />
             <Input
               title="Address"
@@ -111,6 +121,7 @@ const allowedVoters = () => {
               handleChange={(e) => {
                 setFormInput({ ...formInput, address: e.target.value });
               }}
+              required={true}
             />
             <Input
               title="Position"
@@ -119,16 +130,34 @@ const allowedVoters = () => {
               handleChange={(e) => {
                 setFormInput({ ...formInput, position: e.target.value });
               }}
+              required={true}
             />
-            <Button btnName="Authorize Voter" handleClick={() => {}} />
-          </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                createVoter(formInput, fileUrl, router);
+              }}
+              disabled={
+                !formInput.name ||
+                !formInput.address ||
+                !formInput.position ||
+                !fileUrl
+              }
+            >
+              Authorize Voter
+            </button>
+          </form>
         </div>
       </div>
       {/* {/////////////////////////////////////////////////////////////////////////////////////////////////////////} */}
       <div className={Style.createdVoter}>
         {/* //RiGHT MOST DIV */}
         <div className={Style.createdVoterInfo}>
-          <img src={fileUrl ? fileUrl : ""} alt="User Profile" />
+          <img
+            src={fileUrl ? fileUrl : ""}
+            alt="User Profile"
+            crossOrigin="anonymous"
+          />
           <p>Notice For User</p>
           <p>
             Address <span>0x83747someaddress897</span>
@@ -139,6 +168,8 @@ const allowedVoters = () => {
           </p>
         </div>
       </div>
+      <Web3Button>CONNECT</Web3Button>
+      {/* {myAccount && <div> Connected </div>} */}
     </div>
   );
 };

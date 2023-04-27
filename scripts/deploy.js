@@ -20,7 +20,7 @@ async function main() {
   console.log(
     `Create with ${ethers.utils.formatEther(
       lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${create.address} chutya ayush`
+    )}ETH and unlock timestamp ${unlockTime} deployed to ${create.address} OK STILL WORKING`
   );
 }
 
