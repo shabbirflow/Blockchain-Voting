@@ -8,8 +8,6 @@ import axios from "axios";
 //INTERNAL INPUTS
 import { votingAddress, votingAddressAbi } from "./constants";
 
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
-
 //fetch contract and communicate with solidity
 const fetchContract = (signerOrProvider) =>
   new ethers.Contract(votingAddress, votingAddressAbi, signerOrProvider);
@@ -57,20 +55,41 @@ export const VotingProvider = (props) => {
   //---------------UPLOAD IMAGE TO IPFS FOR VOTER------------------------
   const uploadToIPFS = async (file) => {
     try {
-      const added = await client.add({ content: file });
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      return url;
+      const formData = new FormData();
+      formData.append("file", file);
+      console.log(formData);
+      console.log(file);
+      const resFile = await axios({
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        data: formData,
+        headers: {
+          pinata_api_key: "a77cb06952379d906cab",
+          pinata_secret_api_key:
+            "fe4fbca6ee3abba2118369871c9076f0d84f0e465a749d7bd593ac45d0a79d6b",
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const ImgHash = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+      // https://gateway.pinata.cloud/ipfs/QmW3rq7ikx8GrTmop9JPxqeKCtkhjvPxzvB2L5erQpTgJh
+      console.log(ImgHash);
+      return ImgHash;
     } catch (error) {
-      setError("ERROR Uploading Image to IPFS");
+      console.log("Error sending File to IPFS: ");
+      console.log(error);
     }
   };
 
   const votingTitle = "BC VOTINGGO Smart Contract App";
-  const value = {votingTitle, checkIfWalletConnected, connectWallet, uploadToIPFS};
+  const value = {
+    votingTitle,
+    checkIfWalletConnected,
+    connectWallet,
+    uploadToIPFS,
+  };
   return (
-    <VotingContext.Provider value = {value}>
+    <VotingContext.Provider value={value}>
       {props.children}
     </VotingContext.Provider>
   );
 };
-
