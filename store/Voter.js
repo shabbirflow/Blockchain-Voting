@@ -166,7 +166,7 @@ export const VotingProvider = (props) => {
     console.log("I MADE IT");
     //VOTER LIST
     const voterList = await contract.getVoters();
-    voterList.wait();
+    // voterList.wait();
     console.log(voterList);
   };
 

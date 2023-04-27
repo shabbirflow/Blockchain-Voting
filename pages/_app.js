@@ -20,7 +20,7 @@ import { Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, polygon, localhost, hardhat } from "wagmi/chains";
 
-const chains = [localhost, hardhat];
+const chains = [hardhat, localhost];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);

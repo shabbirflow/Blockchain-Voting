@@ -9,6 +9,10 @@ contract Create {
     Counters.Counter public _voterId;
     Counters.Counter public _candidateId;
 
+    receive() external payable {} // to support receiving ETH by default
+
+    fallback() external payable {}
+
     address public votingOrganizer;
 
     //Candidate for VOTING
@@ -221,8 +225,21 @@ contract Create {
     }
 
     //self explanatory
-    function getVoterData( address _address) public view returns(uint256, string memory, string memory, 
-    address, string memory, uint256, bool){
+    function getVoterData(
+        address _address
+    )
+        public
+        view
+        returns (
+            uint256,
+            string memory,
+            string memory,
+            address,
+            string memory,
+            uint256,
+            bool
+        )
+    {
         return (
             voters[_address].voter_voterId,
             voters[_address].voter_name,
@@ -235,12 +252,12 @@ contract Create {
     }
 
     //get list of users who already voted
-    function getVotedVoterList() public view returns(address[] memory){
+    function getVotedVoterList() public view returns (address[] memory) {
         return votedVoters;
     }
 
     //get list of all voters
-    function getVoters() public view returns (address[] memory){
+    function getVoters() public view returns (address[] memory) {
         return votersAddress;
     }
 }
