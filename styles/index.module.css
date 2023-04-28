@@ -1,3 +1,209 @@
 .class{
     color: red;
 }
+.numbers{
+    width: 40vw;
+    height: 6vh;
+    margin: 1rem auto; 
+    background-color: yellow;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    border-radius: 1rem;
+    transition: 0.1s;
+    align-items: center;
+    background-color: #50577A;
+}
+.numbers h3{
+    font-size: 1.5em;
+}
+.numbers span{
+    color: yellow;
+}
+.candidateGrid{
+    width: 90vw;
+    margin: 1rem auto;
+    /* background-color: yellow; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.candidateGrid ul{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    height: 20rem;
+    width: 15rem;
+    margin: 1.5rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 3px solid red; */
+    transition: 0.1s;
+    background-color: #3F3B6C;
+    /* background-color: #3E2C41; */
+    font-weight: 500;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+.card span{
+    font-weight: 600;
+    color: red;
+    letter-spacing: 0.4;
+}
+.card .a{
+    font-size: 1.3em;
+}
+.card:hover{
+    scale: 1.02;
+    border: none;
+    background-color: zzz;
+}
+
+.vote {
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: 500px;
+    transition-property: background-color,border-color,color,box-shadow,filter;
+    transition-duration: .3s;
+    border: 1px solid transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: normal;
+    font-weight: 700;
+    text-align: center;
+    /* padding: 16px 14px 18px; */
+    color: #fff;
+    background-color: #15883e;
+    height: 2.3rem;
+    margin: 0;
+    width: 8rem;
+}
+
+.vote:hover{
+    background-color: #1db954;
+}
+
+.vote:disabled{
+    background-color: grey;
+    color: #282A3A;
+}
+
+/* .connect{
+    margin: auto auto;
+    padding: 3rem;
+} */
+
+.connectBox{
+    width: 100vw;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.voterListButton:disabled{
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: 500px;
+    transition-property: background-color,border-color,color,box-shadow,filter;
+    transition-duration: .3s;
+    border: 1px solid transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: normal;
+    font-weight: 700;
+    text-align: center;
+    /* padding: 16px 14px 18px; */
+    color: white;
+    background-color: #15883e;
+    height: 2.3rem;
+    margin: 0;
+    width: 8rem;
+}
+
+.voterListRed:disabled{
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: 500px;
+    transition-property: background-color,border-color,color,box-shadow,filter;
+    transition-duration: .3s;
+    border: 1px solid transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: normal;
+    font-weight: 700;
+    text-align: center;
+    /* padding: 16px 14px 18px; */
+    color: #fff;
+    background-color: red;
+    height: 2.3rem;
+    margin: 0;
+    width: 10.5rem;
+}
+
+.statusTitle{
+    width: 100vw;
+    height: 4rem;
+    /* background-color: yellow; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.statusTitle h1{
+    cursor: pointer;
+}
+.statusTitle h1:hover{
+    scale: 1.05;
+    font-weight: 600;
+    text-shadow: orange 1px 1px 10px;
+}
+
+.winnerButton{
+    position: fixed;
+    right: 2rem;
+    bottom: 7rem;
+    display: inline-block;
+    outline: 0;
+    border: 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    background-image: linear-gradient(to right,#e052a0,#f15c41)!important;
+    border-radius: 3px;
+    padding: 16px 18px 15px;
+    white-space: nowrap;    
+}
+.winnerButton:hover{
+    background-color: #e6375a;
+    background-image: none!important;
+}
+.winnerBox{
+    /* background-color: yellow; */
+    width: 100vw;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

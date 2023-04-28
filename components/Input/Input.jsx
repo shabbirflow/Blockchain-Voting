@@ -11,19 +11,16 @@ export const Input = ({
 }) => {
   return (
     <div className={Style.inputContainer}>
-      <p>{title}</p>
+      <p className={Style.inputTitle}>{title}</p>
       <div className={Style.inputDiv}>
-        {inputType === "text" ? (
+        {/* {inputType === "text" ? ( */}
           <input
-            type="text"
+            type={inputType}
             className={Style.inputText}
             placeholder={placeholder}
             onChange={handleChange}
             required={required}
           />
-        ) : (
-          <div>lol</div>
-        )}
       </div>
     </div>
   );

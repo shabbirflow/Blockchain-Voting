@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
-let initial = false;
 //INTERNAL INPUTS
 import { votingAddress, votingAddressAbi } from "./constants";
-import { useAccount, useContract, useConnect, useSigner, useProvider } from "wagmi";
+import {
+  useAccount,
+  useContract,
+  useConnect,
+  useSigner,
+  useProvider,
+} from "wagmi";
 
 //fetch contract and communicate with solidity
 const fetchContract = (signerOrProvider) =>
@@ -13,36 +18,49 @@ const fetchContract = (signerOrProvider) =>
 
 export const VotingContext = React.createContext();
 
-export const VotingProvider = (props) => {
+const VotingProvider = ({ children }) => {
+  const account = useAccount();
   const router = useRouter();
   const [currentAccount, setCurrentAccount] = useState("");
   const [candidateLength, setCandidateLength] = useState("");
   const pushCandidate = [];
-  const [candidateArray, setCandidateArray] = useState(pushCandidate);
+  const [candidateArray, setCandidateArray] = useState([]);
+  const [winner, setWinner] = useState({ name: "UNDEFINED" });
   //-------------------END OF CANDIDATE DATA--------------------
   const [error, setError] = useState();
+  const [count, setCount] = useState(1);
   const highestVote = [];
 
   //---------------------VOTER SECTION-----------------------
-  const pushVoter = [];
-  const [voterArray, setVoterArray] = useState(pushVoter);
+  const [voterArray, setVoterArray] = useState([]);
   const [voterLength, setVoterLength] = useState("");
   const [voterAddress, setVoterAddress] = useState([]);
+  // console.log(candidateLength, candidateArray, "IN VOTER");
 
   //----------------CONNECT TO METAMASK---------------------
   const myAccount = useAccount();
-  const connector = useConnect({
-    onSuccess(data) {
-      console.log("Connect", data);
-    },
-  });
-  // const provider = useProvider();
-  // const signer = useSigner();
-  // const contract = useContract({
-  //   address: votingAddress,
-  //   abi: votingAddressAbi,
-  //   signerOrProvider: signer.signer,
-  // });
+
+  useEffect(() => {
+    if (error) {
+      router.push("/error");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!myAccount.isConnected) {
+      router.push("/needConnect");
+    }
+  }, [myAccount]);
+
+  useEffect(() => {
+    const idk = async () => {
+      await getCandidateList().then(() => {
+        findWinner();
+      });
+      await getVoterList();
+    };
+    idk();
+  }, []);
 
   const checkIfWalletConnected = async () => {
     if (!window.ethereum) {
@@ -56,6 +74,15 @@ export const VotingProvider = (props) => {
     }
   };
   //------------------CONNECT WALLET-------------------------------
+
+  const findWinner = () => {
+    console.log(candidateArray);
+    let winner = null;
+    candidateArray.map((x) => {
+      !winner || x[4].toNumber() > winner[4].toNumber() ? (winner = x) : null;
+    });
+    setWinner(winner);
+  };
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -71,16 +98,15 @@ export const VotingProvider = (props) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      console.log(formData);
-      console.log(file);
+      // console.log(formData);
+      // console.log(file);
       const resFile = await axios({
         method: "post",
         url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
         data: formData,
         headers: {
-          pinata_api_key: "a77cb06952379d906cab",
-          pinata_secret_api_key:
-            "fe4fbca6ee3abba2118369871c9076f0d84f0e465a749d7bd593ac45d0a79d6b",
+          pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY,
+          pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_API_SECRET,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -91,20 +117,19 @@ export const VotingProvider = (props) => {
     } catch (error) {
       setError(error);
       console.log(error);
-      console.log("ERROR WHILE UPLOADING TO IPFS");
+      // console.log("ERROR WHILE UPLOADING TO IPFS");
     }
   };
   const uploadDataToIPFS = async (data) => {
     try {
-      console.log(data);
+      // console.log(data);
       const resFile = await axios({
         method: "post",
         url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
         data: data,
         headers: {
-          pinata_api_key: "a77cb06952379d906cab",
-          pinata_secret_api_key:
-            "fe4fbca6ee3abba2118369871c9076f0d84f0e465a749d7bd593ac45d0a79d6b",
+          pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY,
+          pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_API_SECRET,
           "Content-Type": "application/json",
         },
       });
@@ -115,7 +140,7 @@ export const VotingProvider = (props) => {
     } catch (error) {
       setError(error);
       console.log(error);
-      console.log("ERROR WHILE UPLOADING DATA TO IPFS");
+      // console.log("ERROR WHILE UPLOADING DATA TO IPFS");
     }
   };
   //  --------------------------------------------CREATE VOTER-------------------------------------------
@@ -124,28 +149,29 @@ export const VotingProvider = (props) => {
       const { name, address, position } = formInput;
       // console.log(name, address, position, fileURL, router);
       // ----------------------------CONNECT TO SMART CONTRACT---------------------------
-      console.log("HEY");
+      // console.log("HEY");
       const data = JSON.stringify({ name, address, position, image: fileURL });
       const uploadedURL = await uploadDataToIPFS(data);
-      console.log(uploadedURL);
-
+      // console.log(uploadedURL);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      
       const contract = fetchContract(signer);
-      console.log(provider, signer, contract);
+      // console.log(provider, signer, contract);
       const voter = await contract.voterRight(
         address,
         name,
         fileURL,
         uploadedURL
       );
-      voter.wait();
+      voter.wait().then(async (res) => {
+        await getVoterList();
+      });
       console.log(voter);
+      await getVoterList();
       router.push("/voterList");
     } catch (e) {
       console.log(e);
-      setError("ERROR WHILE CREATING VOTER");
+      setError(e);
     }
   };
 
@@ -153,28 +179,128 @@ export const VotingProvider = (props) => {
   const getVoterList = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    console.log(
-      "PROVIDER: ",
-      provider,
-      "SIGNER: ",
-      signer,
-      "CONNECTED: ",
-      connector.isConnected
-    );
+    // console.log(
+    //   "PROVIDER: ",
+    //   provider,
+    //   "SIGNER: ",
+    //   signer,
+    //   "CONNECTED: ",
+    //   connector.isConnected
+    // );
     const contract = fetchContract(signer);
-    console.log(contract);
-    console.log("I MADE IT");
+    // console.log(contract);
+    // console.log("I MADE IT");
     //VOTER LIST
-    const voterList = await contract.getVoters();
-    // voterList.wait();
-    console.log(voterList);
+    let pushCandidate = [];
+    try {
+      const voterList = await contract.getVoters();
+      pushCandidate = [];
+      voterList.map(async (ele) => {
+        const singleVoterData = await contract.getVoterData(ele);
+        // console.log(singleVoterData);
+        pushCandidate.push(singleVoterData);
+      });
+      // console.log(pushCandidate);
+      setVoterArray(pushCandidate);
+      const voterLength = await contract.getVoterLength();
+      setVoterLength(voterLength.toNumber());
+      // console.log(voterLength.toNumber());
+    } catch (e) {
+      setError(e);
+      console.log(e);
+    }
   };
 
-  // useEffect(() => {
-  //   getVoterList();
-  // }, [])
+  //------------------VOTE FUNCTION------------------------------------------------
+  const vote = async (id) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = fetchContract(signer);
+      const voted = await contract.vote(id.address, id.id).then(async () => {
+        await getCandidateList();
+        findWinner();
+      });
+      console.log(voted);
+    } catch (e) {
+      console.log(e);
+      setError(e);
+    }
+  };
 
-  const votingTitle = "BC VOTINGGO Smart Contract App";
+  //---------------------------------------------------CANDIDATE SECTION-----------------------------------------------------
+  //_---------------------------------------------------------------------------------------------------------------------
+  const createCandidate = async (formInput, fileURL, router) => {
+    try {
+      const { name, address, age } = formInput;
+      // console.log(name, address, position, fileURL, router);
+      // ----------------------------CONNECT TO SMART CONTRACT---------------------------
+      // console.log("HEY");
+      const data = JSON.stringify({ name, address, age, image: fileURL });
+      const uploadedURL = await uploadDataToIPFS(data);
+      // console.log(uploadedURL);
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const contract = fetchContract(signer);
+      // console.log(provider, signer, contract);
+      const candidate = await contract.setCandidate(
+        address,
+        name,
+        age,
+        uploadedURL,
+        fileURL
+      );
+      candidate.wait().then(async (res) => {
+        await getCandidateList();
+      });
+      console.log(candidate);
+
+      router.push("/voterList");
+    } catch (e) {
+      console.log(e);
+      setError(e);
+    }
+  };
+
+  //------------------------------GET ALL CANDIDATE DATA--------------------------
+  const getCandidateList = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    // console.log(
+    //   "PROVIDER: ",
+    //   provider,
+    //   "SIGNER: ",
+    //   signer,
+    //   "CONNECTED: ",
+    //   connector.isConnected
+    // );
+    const contract = fetchContract(signer);
+    // console.log(contract);
+    // console.log("I MADE IT");
+    let pushCandidate = [];
+    try {
+      const candidateList = await contract.getCandidate();
+      candidateList.map(async (ele) => {
+        const singleCandidate = await contract.getcandidatedata(ele);
+        // console.log(singleVoterData);
+        pushCandidate.push(singleCandidate);
+        // candidateIn
+      });
+      // console.log(pushCandidate);
+      setCandidateArray(pushCandidate);
+      const candidatesLength = await contract.getCandidateLength();
+      setCandidateLength(candidatesLength.toNumber());
+      // console.log(pushCandidate, candidatesLength.toNumber(), candidateArray);
+      return pushCandidate;
+    } catch (e) {
+      setError(e);
+      console.log(e);
+    }
+  };
+
+  const votingTitle = "BC VOTINGG Smart Contract App";
   const value = {
     votingTitle,
     checkIfWalletConnected,
@@ -182,10 +308,25 @@ export const VotingProvider = (props) => {
     uploadToIPFS,
     createVoter,
     getVoterList,
+    createCandidate,
+    getCandidateList,
+    error,
+    voterArray,
+    voterAddress,
+    voterLength,
+    currentAccount,
+    createCandidate,
+    setCandidateArray,
+    candidateArray,
+    candidateLength,
+    vote,
+    winner,
+    findWinner,
+    myAccount,
   };
   return (
-    <VotingContext.Provider value={value}>
-      {props.children}
-    </VotingContext.Provider>
+    <VotingContext.Provider value={value}>{children}</VotingContext.Provider>
   );
 };
+
+export default VotingProvider;

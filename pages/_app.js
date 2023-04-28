@@ -1,16 +1,5 @@
-// import "../styles/global.css";
-// // src\styles\globals.css
-// import Navbar from "../components/Navbar/Navbar";
-// import { VotingProvider } from "../store/Voter";
-
-// export default function App({ Component, pageProps }) {
-//   return (
-//     <VotingProvider>
-//     <Navbar />
-//       <Component {...pageProps} />
-//     </VotingProvider>
-//   );
-// }
+import { Karla } from "@next/font/google";
+import BottomNavbar from "../components/BottomNavigation/BottomNavbar";
 import {
   EthereumClient,
   w3mConnectors,
@@ -19,7 +8,7 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, polygon, localhost, hardhat } from "wagmi/chains";
-
+import VotingProvider, { VotingContext } from "../store/Voter";
 const chains = [hardhat, localhost];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
@@ -34,19 +23,28 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 import "../styles/global.css";
 // src\styles\globals.css
 import Navbar from "../components/Navbar/Navbar";
-import { VotingProvider } from "../store/Voter";
+import Head from "next/head";
+import { useContext } from "react";
+
+const karla = Karla({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function App({ Component, pageProps }) {
+
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
-        <VotingProvider>
-          <Navbar />
-          <Component {...pageProps} />
-        </VotingProvider>
-      </WagmiConfig>
-
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+      <VotingProvider>
+        <main className={karla.className}>
+          <WagmiConfig client={wagmiClient}>
+            <Navbar />
+            <Component {...pageProps} />
+          </WagmiConfig>
+          <BottomNavbar />
+          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+        </main>
+      </VotingProvider>
     </>
   );
 }

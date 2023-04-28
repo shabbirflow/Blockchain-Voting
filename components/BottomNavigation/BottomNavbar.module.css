@@ -1,0 +1,27 @@
+.link{
+    transition: 0.1s;
+    color: #F2F7A1;
+    font-weight: 400;
+    font-size: 20px;
+    border: none;
+    text-decoration: none;
+    letter-spacing: 0.1rem;
+
+}
+
+.link:hover{
+    scale: 1.1;
+    text-shadow: orange 1px 1px 10px;
+}
+
+.bottomNav{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #282A3A
+}
