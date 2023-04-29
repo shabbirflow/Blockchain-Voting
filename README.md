@@ -11,6 +11,8 @@
  <li> Transaction is initiated when registering candidate or voter or while voting </li>
  </ul>
 
+<img src="https://user-images.githubusercontent.com/115451412/235284747-433b2df3-3e7b-4560-ad60-c3d5653ffb1d.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/115451412/235284754-e669af54-673e-44a6-9257-509fa7c7a7d1.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/115451412/235284756-9c951e95-6593-4f9f-ad6a-901463e55c6c.png" width="45%"></img> <img src="https://user-images.githubusercontent.com/115451412/235284764-dd35c080-b808-4424-a008-686ac802d728.png" width="45%"></img> 
+
 
 # Sample Hardhat Project
 
