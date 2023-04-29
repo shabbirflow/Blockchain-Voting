@@ -20,3 +20,11 @@ npx hardhat run scripts/deploy.js
     
  
  ### FEATURES : ###
+ <ul> 
+ <li> Connect to Metamask / Smart Wallet </li>
+ <li> Register as a voter or as a candidate to stand for election </li>
+ <li> Authorization : only voting organizer can create voter or candidate </li>
+ <li> Error Handling : You cannot vote twice </li>
+ <li> See Voters Status </li>
+ <li> Transaction is initiated while register candidate or voter or while voting </li>
+ </ul>
