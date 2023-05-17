@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import Head from "next/head";
 import Countdown from "react-countdown";
+import Tilt from "react-parallax-tilt";
 //Internal IMPORTS
 import { VotingContext } from "../store/Voter";
 import style from "../styles/index.module.css";
@@ -14,18 +15,28 @@ import Modal from "@mui/material/Modal";
 import { Box } from "@mui/material";
 
 const modalstyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100vw",
+  height: "100vh",
+  backgroundColor: "rgba(0,0,0,0.7)",
+};
+
+const tiltStyle = {
+  width: "30rem",
+  height: "30rem",
+  backgroundColor: "#282A3A",
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
   alignItems: 'center',
-  width: '100vw',
-  height: '100vh',
-  backgroundColor: 'rgba(0,0,0,0.7)',
-};
+  justifyContent: 'center',
+}
 
 const HOME = () => {
   const {
@@ -49,7 +60,7 @@ const HOME = () => {
   const handleClose = () => {
     setWinnerView(false);
   };
-
+  // console.log(winner);
   const stuff = (
     <>
       <div className={style.numbers}>
@@ -101,26 +112,39 @@ const HOME = () => {
         <button onClick={handleWinner} className={style.winnerButton}>
           Get Winner
         </button>
-        <Modal open={winnerView} onClose={handleClose} sx = {modalstyle}>
+        <Modal open={winnerView} onClose={handleClose} sx={modalstyle}>
           {winner && winner[3] && winner[4] ? (
-            <Card className={style.card}>
-              <CardMedia
-                image={winner[3]}
-                alt="candidate image"
-                sx={{ width: "10rem", height: "10rem", margin: "0.3rem" }}
-                title="green iguana"
-              />
-              <CardContent>
-                <div>
-                  <span className={style.a}>{winner[0]}</span>
-                </div>
-                <div>
-                  Age: <span>{winner[1]}</span>
-                </div>
-                <div>{/* Votes: <span>{winner[4].toNumber()}</span> */}</div>
-              </CardContent>
-              <div>YOU WON !!</div>
-            </Card>
+            <>
+              <Tilt
+                style={tiltStyle}
+              >
+                <h1 className={style.neonText}>WINNER</h1>
+                <Card className={style.card}>
+                  <CardMedia
+                    image={winner[3]}
+                    alt="candidate image"
+                    sx={{ width: "10rem", height: "10rem", margin: "0.3rem" }}
+                    title="green iguana"
+                  />
+                  <CardContent>
+                    <div>
+                      <span className={style.a}>{winner[0]}</span>
+                    </div>
+                    <div>
+                      Age: <span>{winner[1]}</span>
+                    </div>
+                    <div>
+                      Address: <span>{winner[6].slice(0, 9)}...</span>
+                    </div>
+
+                    <div>
+                      {/* Votes: <span>{winner[4].toNumber()}</span> */}
+                    </div>
+                  </CardContent>
+                  {/* <div>YOU WON !!</div> */}
+                </Card>
+              </Tilt>
+            </>
           ) : (
             <div>WINNER NOT FOUND YET</div>
           )}

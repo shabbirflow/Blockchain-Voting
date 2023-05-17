@@ -9,6 +9,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Head from "next/head";
 
 //---------------INTERNAL IMPORTS--------------
 import { VotingContext } from "../store/Voter";
@@ -158,50 +159,55 @@ const candidateRegistration = () => {
   );
 
   return (
-    <div className={Style.createVoter}>
-      <div className={Style.allowedVoters}>
-        <div className={Style.left}>
-          <div className={Style.leftTitle}>
-            <h1>REGISTER A CANDIDATE</h1>
-            <div className={Style.leftTitleDesc}>
-              You can register as a candidate to stand in the election. You must
-              provide your smart wallet address, age & name. The voting
-              organizer initiates a transaction by sending it to the smart
-              wallet address of the registered candidate.
+    <>
+      <Head>
+        <title>Register Candidate</title>
+      </Head>
+      <div className={Style.createVoter}>
+        <div className={Style.allowedVoters}>
+          <div className={Style.left}>
+            <div className={Style.leftTitle}>
+              <h1>REGISTER A CANDIDATE</h1>
+              <div className={Style.leftTitleDesc}>
+                You can register as a candidate to stand in the election. You
+                must provide your smart wallet address, age & name. The voting
+                organizer initiates a transaction by sending it to the smart
+                wallet address of the registered candidate.
+              </div>
+            </div>
+            <div className={Style.leftRecent}>
+              <h1>Recently Registered</h1>
+              <ul className={Style.leftRecentList}>
+                {candidateArray &&
+                  candidateArray.length > 0 &&
+                  candidateArray.map((x, ind) => (
+                    <Card key={ind} className={Style.recentCard}>
+                      <CardMedia
+                        sx={{ height: "3rem", width: "3rem" }}
+                        image={x[3]}
+                        title="green iguana"
+                      />
+                      <CardContent className={Style.content}>
+                        <Typography gutterBottom component="div">
+                          {x[0]}
+                        </Typography>
+                        <Typography>{x[6].slice(0, 10)}...</Typography>
+                      </CardContent>
+                    </Card>
+                  ))}
+              </ul>
             </div>
           </div>
-          <div className={Style.leftRecent}>
-            <h1>Recently Registered</h1>
-            <ul className={Style.leftRecentList}>
-            {candidateArray &&
-              candidateArray.length > 0 &&
-              candidateArray.map((x, ind) => (
-                <Card key={ind} className={Style.recentCard}>
-                  <CardMedia
-                    sx={{ height: "3rem", width: "3rem" }}
-                    image={x[3]}
-                    title="green iguana"
-                  />
-                  <CardContent className={Style.content}>
-                    <Typography gutterBottom component="div">
-                      {x[0]}
-                    </Typography>
-                    <Typography>{x[6].slice(0, 10)}...</Typography>
-                  </CardContent>
-                </Card>
-              ))}
-          </ul>
-          </div>
-        </div>
-        <div className={Style.right}>
-          <div className={Style.rightForm}>
-            <h1>Create New Candidate</h1>
-            {imgDropStuff}
-            {candidateForm}
+          <div className={Style.right}>
+            <div className={Style.rightForm}>
+              <h1>Create New Candidate</h1>
+              {imgDropStuff}
+              {candidateForm}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { Web3Button } from "@web3modal/react";
+import Head from "next/head";
 
 //---------------INTERNAL IMPORTS--------------
 import { VotingContext } from "../store/Voter";
@@ -56,18 +57,32 @@ const allowedVoters = () => {
               <Image
                 src={myimage}
                 alt="upload image"
-                style={{ width: "75px", height: "75px", objectFit: "contain", margin: '1rem' }}
+                style={{
+                  width: "75px",
+                  height: "75px",
+                  objectFit: "contain",
+                  margin: "1rem",
+                }}
               />
             )}
-            {fileUrl && <img src={fileUrl} alt="voter uploaded image"
-                style={{ width: "75px", height: "75px", objectFit: "contain", margin: '1rem' }}
-              />}
+            {fileUrl && (
+              <img
+                src={fileUrl}
+                alt="voter uploaded image"
+                style={{
+                  width: "75px",
+                  height: "75px",
+                  objectFit: "contain",
+                  margin: "1rem",
+                }}
+              />
+            )}
             <div>
-            <p>
-              Upload File: <span>JPG, PNG, GIF, WEBM Max 10Mb</span>
-            </p>
-            <p>Drag & Drop Image File</p>
-            <p>Or upload file from your device</p>
+              <p>
+                Upload File: <span>JPG, PNG, GIF, WEBM Max 10Mb</span>
+              </p>
+              <p>Drag & Drop Image File</p>
+              <p>Or upload file from your device</p>
             </div>
           </div>
         </div>
@@ -106,7 +121,8 @@ const allowedVoters = () => {
             }}
             required={true}
           />
-          <button className={Style.voterButton}
+          <button
+            className={Style.voterButton}
             onClick={(e) => {
               e.preventDefault();
               createVoter(formInput, fileUrl, router);
@@ -126,47 +142,52 @@ const allowedVoters = () => {
   );
   console.log(voterArray);
   return (
-    <div className={Style.allowedVoters}>
-      <div className={Style.left}>
-        <div className={Style.leftTitle}>
-          <h1>REGISTER A VOTER</h1>
-          <div className={Style.leftTitleDesc}>
-            You can register a voter to vote for the election. Only the voting
-            organizer has the authority to register a voter. A transaction will
-            be made between the organizer and the voter.
+    <>
+      <Head>
+        <title>Register Voter</title>
+      </Head>
+      <div className={Style.allowedVoters}>
+        <div className={Style.left}>
+          <div className={Style.leftTitle}>
+            <h1>REGISTER A VOTER</h1>
+            <div className={Style.leftTitleDesc}>
+              You can register a voter to vote for the election. Only the voting
+              organizer has the authority to register a voter. A transaction
+              will be made between the organizer and the voter.
+            </div>
+          </div>
+          <div className={Style.leftRecent}>
+            <h1>Recently Registered</h1>
+            <ul className={Style.leftRecentList}>
+              {voterArray &&
+                voterArray.length > 0 &&
+                voterArray.map((x, ind) => (
+                  <Card key={ind} className={Style.recentCard}>
+                    <CardMedia
+                      sx={{ height: "3rem", width: "3rem" }}
+                      image={x[2]}
+                      title="green iguana"
+                    />
+                    <CardContent className={Style.content}>
+                      <Typography gutterBottom component="div">
+                        {x[1]}
+                      </Typography>
+                      <Typography>{x[3].slice(0, 10)}...</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+            </ul>
           </div>
         </div>
-        <div className={Style.leftRecent}>
-          <h1>Recently Registered</h1>
-          <ul className={Style.leftRecentList}>
-            {voterArray &&
-              voterArray.length > 0 &&
-              voterArray.map((x, ind) => (
-                <Card key={ind} className={Style.recentCard}>
-                  <CardMedia
-                    sx={{ height: "3rem", width: "3rem" }}
-                    image={x[2]}
-                    title="green iguana"
-                  />
-                  <CardContent className={Style.content}>
-                    <Typography gutterBottom component="div">
-                      {x[1]}
-                    </Typography>
-                    <Typography>{x[3].slice(0, 10)}...</Typography>
-                  </CardContent>
-                </Card>
-              ))}
-          </ul>
+        <div className={Style.right}>
+          <div className={Style.rightForm}>
+            <h1>Create New Voter</h1>
+            {imgDropStuff}
+            {voterFormStuff}
+          </div>
         </div>
       </div>
-      <div className={Style.right}>
-        <div className={Style.rightForm}>
-        <h1>Create New Voter</h1>
-          {imgDropStuff}
-          {voterFormStuff}
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
