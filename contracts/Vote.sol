@@ -196,6 +196,7 @@ contract Create {
             voter.voter_voted,
             voter.voter_vote,
             _ipfs
+            
         );
     }
 
